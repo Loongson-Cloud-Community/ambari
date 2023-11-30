@@ -29,6 +29,10 @@
   <name>Ambari Admin View</name>
   <version>2.7.0.0.0</version>
   <description>Admin control panel</description>
+  <properties>
+	  <!--	  <admin-web.tar>file:///opt/compile-ambari/admin-web.tar.gz</admin-web.tar>-->
+      <admin-web.tar>https://github.com/Loongson-Cloud-Community/ambari/releases/download/release-2.7.0/admin-web.tar.gz</admin-web.tar>
+  </properties>
   <build>
     <plugins>
       <plugin>
@@ -69,7 +73,7 @@
           <npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
         </configuration>
         <executions>
-          <execution>
+		<!--<execution>
             <id>install node and npm</id>
             <phase>generate-sources</phase>
             <goals>
@@ -83,16 +87,15 @@
               <goal>npm</goal>
             </goals>
             <configuration>
-              <arguments>install --unsafe-perm</arguments>
             </configuration>
-          </execution>
+    </execution> -->
         </executions>
       </plugin>
       <plugin>
         <artifactId>exec-maven-plugin</artifactId>
         <groupId>org.codehaus.mojo</groupId>
         <executions>
-          <execution>
+		<!-- <execution>
             <id>Bower install</id>
             <phase>generate-sources</phase>
             <goals>
@@ -104,10 +107,9 @@
               <arguments>
                 <argument>${basedir}/src/main/resources/ui/admin-web/node_modules/bower/bin/bower</argument>
                 <argument>install</argument>
-                <argument>--allow-root</argument>
               </arguments>
             </configuration>
-          </execution>
+    </execution> 
           <execution>
             <id>Gulp build</id>
             <phase>generate-sources</phase>
@@ -130,12 +132,11 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <!-- sets Ambari version to make it accessible from code -->
               <executable>${executable.shell}</executable>
               <workingDirectory>${basedir}</workingDirectory>
               <commandlineArgs>${args.shell} ${basedir}${dirsep}set-ambari-version.${fileextension.shell} ${ambariVersion}</commandlineArgs>
             </configuration>
-          </execution>
+    </execution> -->
           <!--  @TODO: uncomment below execution for triggering ambar-admin UI unit tests from maven test phase.(AMBARI-7600)
           <execution>
             <id>unit test</id>
@@ -155,6 +156,52 @@
           -->
         </executions>
       </plugin>
+      <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+			<!--		    <execution>
+		        <id>jar_download</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                          <goal>run</goal>
+                        </goals>
+                        <configuration>
+                          <target name="Download admin.jar">
+				  <mkdir dir="${project.basedir}/target"/>
+                            <get
+                                src="https://github.com/Loongson-Cloud-Community/ambari/releases/download/release-2.7.0/ambari-admin-2.7.0.0.0.jar"
+				dest="${project.basedir}/target/ambari-admin-2.7.0.0.0.jar"
+                                usetimestamp="true"
+                            />
+                          </target>
+                        </configuration>
+		    </execution>-->
+		    <execution>
+                        <id>public_download</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                          <goal>run</goal>
+                        </goals>
+                        <configuration>
+                          <target name="Download admin-web">
+                            <mkdir dir="${project.basedir}"/>
+                            <get
+                                src="${admin-web.tar}"
+				dest="${project.basedir}/src/main/resources/ui/admin-web.tar.gz"
+                                usetimestamp="true"
+                            />
+                            <untar
+                                src="${project.basedir}/src/main/resources/ui/admin-web.tar.gz"
+                                dest="${project.basedir}/src/main/resources/ui"
+                                compression="gzip"
+                            />
+                          </target>
+                        </configuration>
+                    </execution> 
+                </executions>
+      </plugin>		    
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.0</version>

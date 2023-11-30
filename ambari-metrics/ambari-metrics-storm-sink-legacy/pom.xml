@@ -33,6 +33,7 @@ limitations under the License.
   <properties>
     <!--<storm.version>0.9.3.2.2.1.0-2340</storm.version>-->
     <storm.version>0.10.0.2.3.0.0-2557</storm.version>
+    <!-- <storm.version>0.11.0-SNAPSHOT</storm.version>-->
   </properties>
 
   <build>

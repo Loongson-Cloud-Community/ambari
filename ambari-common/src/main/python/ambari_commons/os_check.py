@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 '''
 Licensed to the Apache Software Foundation (ASF) under one
@@ -77,6 +77,8 @@ VER_NT_SERVER = 3
 # Linux specific releases, caching them since they are execution invariants
 _IS_ORACLE_LINUX = os.path.exists('/etc/oracle-release')
 _IS_REDHAT_LINUX = os.path.exists('/etc/redhat-release')
+_IS_LOONGNIX_LINUX = os.path.exists('/etc/loongnix-release')
+_IS_ANOLIS_LINUX = os.path.exists('/etc/anolis-release')
 
 SYSTEM_RELEASE_FILE = "/etc/system-release"
 
@@ -85,6 +87,12 @@ def _is_oracle_linux():
 
 def _is_redhat_linux():
   return _IS_REDHAT_LINUX
+
+def _is_loongnix_linux():
+  return _IS_LOONGNIX_LINUX
+
+def _is_anolis_linux():
+  return _IS_ANOLIS_LINUX
 
 def _is_powerpc():
   return platform.processor() == 'powerpc' or platform.machine().startswith('ppc')
@@ -251,6 +259,10 @@ class OSCheck:
     # special cases
     if _is_oracle_linux():
       operatingSystem = 'oraclelinux'
+    elif _is_loongnix_linux():
+      operatingSystem = 'centos'
+    elif _is_anolis_linux():
+      operatingSystem = 'centos'
     elif operatingSystem.startswith('suse linux enterprise server'):
       operatingSystem = 'sles'
     elif operatingSystem.startswith('red hat enterprise linux'):

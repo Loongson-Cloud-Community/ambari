@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 '''
 Licensed to the Apache Software Foundation (ASF) under one
@@ -164,6 +164,10 @@ def get_ambari_repo_file_full_name():
     ambari_repo_file = "/etc/yum.repos.d/ambari.repo"
   elif OSCheck.is_suse_family():
     ambari_repo_file = "/etc/zypp/repos.d/ambari.repo"
+  elif OSCheck._is_anolis_linux:
+    ambari_repo_file = "/etc/yum.repos.d/ambari.repo"
+  elif OSCheck._is_loongnix_linux:
+    ambari_repo_file = "/etc/yum.repos.d/ambari.repo"
   elif OSCheck.is_windows_family():
     ambari_repo_file = os.path.join(os.environ[ChocolateyConsts.CHOCOLATEY_INSTALL_VAR_NAME],
                                     ChocolateyConsts.CHOCOLATEY_CONFIG_DIR, ChocolateyConsts.CHOCOLATEY_CONFIG_FILENAME)

@@ -21,7 +21,7 @@
   <parent>
     <artifactId>ambari-infra</artifactId>
     <groupId>org.apache.ambari</groupId>
-    <version>2.0.0.0-SNAPSHOT</version>
+    <version>2.7.0.0.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <url>http://maven.apache.org</url>
@@ -32,9 +32,11 @@
   <properties>
     <lucene6.version>6.6.2</lucene6.version>
     <lucene6-core-jar.name>lucene-core-${lucene6.version}.jar</lucene6-core-jar.name>
-    <lucene6-core.url>http://central.maven.org/maven2/org/apache/lucene/lucene-core/${lucene6.version}/${lucene6-core-jar.name}</lucene6-core.url>
+    <lucene6-core.url>http://repo1.maven.org/maven2/org/apache/lucene/lucene-core/${lucene6.version}/${lucene6-core-jar.name}</lucene6-core.url>
+    <!--<lucene6-core.url>file:///opt/compile-ambari/${lucene6-core-jar.name}</lucene6-core.url>-->
     <lucene6-backward-codecs-jar.name>lucene-backward-codecs-${lucene6.version}.jar</lucene6-backward-codecs-jar.name>
-    <lucene6-backward-codecs.url>http://central.maven.org/maven2/org/apache/lucene/lucene-backward-codecs/${lucene6.version}/${lucene6-backward-codecs-jar.name}</lucene6-backward-codecs.url>
+    <lucene6-backward-codecs.url>http://repo1.maven.org/maven2/org/apache/lucene/lucene-backward-codecs/${lucene6.version}/${lucene6-backward-codecs-jar.name}</lucene6-backward-codecs.url>
+    <!--    <lucene6-backward-codecs.url>file:///opt/compile-ambari/${lucene6-backward-codecs-jar.name}</lucene6-backward-codecs.url>-->
   </properties>
 
   <dependencies>

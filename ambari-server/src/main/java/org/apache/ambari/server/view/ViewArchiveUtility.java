@@ -68,11 +68,19 @@ public class ViewArchiveUtility {
     ClassLoader cl = URLClassLoader.newInstance(new URL[]{archiveFile.toURI().toURL()});
 
     InputStream configStream = cl.getResourceAsStream(VIEW_XML);
+/**    try {
+	    // 抛出异常
+	    throw new Exception("给出configStream的值:%s",configStream);
+	} catch (Exception e) {
+    	    // 捕获异常并打印语句
+	    System.out.println("捕获到异常：" + e.getMessage());
+	}
+**/
     if (configStream == null) {
       configStream = cl.getResourceAsStream(WEB_INF_VIEW_XML);
       if (configStream == null) {
         throw new IllegalStateException(
-            String.format("Archive %s doesn't contain a view descriptor.", archiveFile.getAbsolutePath()));
+            String.format("Archive %s doesn't contain a view descriptor. \n %s", archiveFile.getAbsolutePath(),configStream));
       }
     }
 

@@ -32,7 +32,9 @@
     <properties>
         <ambari.dir>${project.parent.parent.basedir}</ambari.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <nodemodules.dir>node_modules</nodemodules.dir> <!-- specify -Dnodemodules.dir option to reduce ambari-web build time by not re-downloading npm modules -->
+	<nodemodules.dir>node_modules</nodemodules.dir> <!-- specify -Dnodemodules.dir option to reduce ambari-web build time by not re-downloading npm modules -->
+	<!--<public.tar>file:///opt/compile-ambari/ambari-web-public.tar.gz</public.tar>-->
+	<public.tar>https://github.com/Loongson-Cloud-Community/ambari/releases/download/release-2.7.0/ambari-web-public.tar.gz</public.tar>
     </properties>
     <build>
         <plugins>
@@ -70,7 +72,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>rpm-maven-plugin</artifactId>
-                <version>2.0.1</version>
+                <version>2.2.0</version>
                 <executions>
                     <execution>
                         <!-- unbinds rpm creation from maven lifecycle -->
@@ -86,7 +88,34 @@
                     <description>Maven Recipe: RPM Package.</description>
                     <mappings/>
                 </configuration>
-            </plugin>
+	    </plugin>
+	    <!--<plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-dependency-plugin</artifactId>
+		<version>3.2.0</version>
+		<executions>
+		  <execution>
+		     <id>unpack</id>
+		     <phase>compile</phase>
+			<goals>
+			  <goal>unpack</goal>
+			</goals>
+		  <configuration>
+		    <artifactItems>
+		      <artifactItem>
+         		<groupId>com.github.Loongson-Cloud-Community.ambari</groupId>
+   		        <artifactId>ambari-web-public</artifactId>
+			<version>release-2.7.0</version>
+			<type>tar.gz</type>
+			<overWrite>true</overWrite>
+			<outputDirectory>${project.basedir}</outputDirectory>
+			<destFileName>ambari-web-public.tar.gz</destFileName>
+		      </artifactItem>
+	            </artifactItems>
+		 </configuration>
+	         </execution>
+		</executions>
+	    </plugin> -->
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
@@ -102,7 +131,7 @@
                         <npm_config_tmp>/tmp/npm_config_tmp</npm_config_tmp>
                     </environmentVariables>
                 </configuration>
-                <executions>
+		<!--<executions>
                     <execution>
                         <id>install node and yarn</id>
                         <phase>generate-sources</phase>
@@ -115,12 +144,12 @@
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>yarn</goal>
-                        </goals>
+			</goals>
                         <configuration>
-                            <arguments>install --ignore-engines --pure-lockfile</arguments>
+				<yarnExecutable>/usr/local/bin/yarn</yarnExecutable>
                         </configuration>
                     </execution>
-                </executions>
+	    </executions>-->
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -156,7 +185,7 @@
                             <commandlineArgs>${args.mkdir} public</commandlineArgs>
                         </configuration>
                     </execution>
-                    <execution>
+		    <!--<execution>
                         <id>Brunch build</id>
                         <phase>generate-resources</phase>
                         <goals>
@@ -170,7 +199,7 @@
                                 <argument>build</argument>
                             </arguments>
                         </configuration>
-                    </execution>
+		    </execution>
                     <execution>
                         <id>set-ambari-version</id>
                         <phase>compile</phase>
@@ -178,7 +207,6 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <!-- sets Ambari version to make it accessible from code -->
                             <executable>${executable.shell}</executable>
                             <workingDirectory>${basedir}</workingDirectory>
                             <commandlineArgs>${args.shell} ${basedir}${dirsep}set-ambari-version.${fileextension.shell} ${ambariVersion}</commandlineArgs>
@@ -191,7 +219,6 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <!-- sets default stack and version to use for install -->
                             <executable>${executable.shell}</executable>
                             <workingDirectory>${basedir}</workingDirectory>
                             <commandlineArgs>${args.shell} ${basedir}${dirsep}set-default-stack-version.${fileextension.shell} ${defaultStackVersion}</commandlineArgs>
@@ -204,7 +231,6 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <!-- enables experimental features if enableExperimental is set to true -->
                             <executable>${executable.shell}</executable>
                             <workingDirectory>${basedir}</workingDirectory>
                             <commandlineArgs>${args.shell} ${basedir}${dirsep}toggle-experimental.${fileextension.shell} ${enableExperimental}</commandlineArgs>
@@ -222,7 +248,7 @@
                             <workingDirectory>${basedir}</workingDirectory>
                             <commandlineArgs>${args.npm} test</commandlineArgs>
                         </configuration>
-                    </execution>
+		</execution>-->
                 </executions>
             </plugin>
             <plugin>
@@ -230,7 +256,29 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.7</version>
                 <executions>
-                    <execution>
+		    <execution>
+		        <id>public_download</id>
+			<phase>generate-resources</phase>
+			<goals>
+			  <goal>run</goal>
+		        </goals>
+			<configuration>
+			  <target name="Download public">
+			    <mkdir dir="${project.basedir}"/>
+			    <get
+				src="${public.tar}"
+				dest="${project.basedir}/public.tar.gz"
+				usetimestamp="true"
+			    />
+		    	    <untar
+				src="${project.basedir}/public.tar.gz"
+				dest="${project.basedir}"
+				compression="gzip"
+			    />
+			  </target>
+			</configuration>
+		    </execution>	
+		    <execution>
                         <id>gzip ambari-web images</id>
                         <phase>prepare-package</phase>
                         <goals>
